@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JOIN THE COLLECTIVE // SCARPAY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
+        body { font-family: 'Space Mono', monospace; background-color: #000; color: #fff; }
+        input, select { background-color: #111; border: 1px solid #333; color: white; padding: 12px; width: 100%; margin-bottom: 20px; outline: none; }
+        input:focus { border-color: #0066FF; }
+        label { font-size: 10px; text-transform: uppercase; color: #666; margin-bottom: 5px; display: block; letter-spacing: 2px; }
+    </style>
+</head>
+<body class="p-8">
+
+    <div class="max-w-md mx-auto">
+        <header class="mb-12">
+            <h1 class="text-3xl font-bold tracking-tighter uppercase">Register <br><span class="text-blue-600">Merchant</span></h1>
+            <p class="text-[10px] text-gray-500 mt-2">SECURE GLOBAL SETTLEMENT PROTOCOL v1.0</p>
+        </header>
+
+        <form>
+            <label>Business Name</label>
+            <input type="text" placeholder="e.g. UNCLE SCAR STUDIO" required>
+
+            <label>Operating Country</label>
+            <select required>
+                <option value="">SELECT REGION...</option>
+                <option value="NG">NIGERIA</option>
+                <option value="US">UNITED STATES</option>
+                <option value="UK">UNITED KINGDOM</option>
+                <option value="GH">GHANA</option>
+                <option value="BR">BRAZIL</option>
+            </select>
+
+            <label>Settlement Currency</label>
+            <select required>
+                <option value="USD">USD - DOLLAR</option>
+                <option value="NGN">NGN - NAIRA</option>
+                <option value="GBP">GBP - POUND</option>
+            </select>
+
+            <div class="mt-8 mb-4 border-t border-[#222] pt-8">
+                <h3 class="text-xs font-bold uppercase mb-6 text-blue-500">// Settlement Destination</h3>
+                
+                <label>Bank Name</label>
+                <input type="text" placeholder="YOUR LOCAL BANK" required>
+
+                <label>Account Number</label>
+                <input type="number" placeholder="0000000000" required>
+            </div>
+
+            <button type="submit" class="w-full bg-white text-black font-bold py-4 uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">
+                Initialize Account
+            </button>
+        </form>
+
+        <footer class="mt-12 text-center">
+            <p class="text-[9px] text-gray-600 uppercase">By initializing, you agree to the FENG Industries Global Protocol.</p>
+        </div>
+    </div>
+
+</body>
+</html>
