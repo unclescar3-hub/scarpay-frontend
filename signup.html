@@ -5,62 +5,119 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JOIN THE COLLECTIVE // SCARPAY</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
         body { font-family: 'Space Mono', monospace; background-color: #000; color: #fff; }
-        input, select { background-color: #111; border: 1px solid #333; color: white; padding: 12px; width: 100%; margin-bottom: 20px; outline: none; }
-        input:focus { border-color: #0066FF; }
+        input, select { background-color: #111; border: 1px solid #333; color: white; padding: 12px; width: 100%; margin-bottom: 20px; outline: none; border-radius: 0px; transition: all 0.2s; }
+        input:focus { border-color: #0066FF; background-color: #050505; }
         label { font-size: 10px; text-transform: uppercase; color: #666; margin-bottom: 5px; display: block; letter-spacing: 2px; }
+        .btn-loading { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
-<body class="p-8">
+<body class="p-8 pb-24 text-sm">
 
     <div class="max-w-md mx-auto">
         <header class="mb-12">
-            <h1 class="text-3xl font-bold tracking-tighter uppercase">Register <br><span class="text-blue-600">Merchant</span></h1>
-            <p class="text-[10px] text-gray-500 mt-2">SECURE GLOBAL SETTLEMENT PROTOCOL v1.0</p>
+            <div class="flex justify-between items-start">
+                <h1 class="text-3xl font-bold tracking-tighter uppercase leading-none">Register <br><span class="text-blue-600 font-black">Merchant</span></h1>
+                <span class="text-[9px] border border-blue-900 text-blue-900 px-2 py-1">v1.0.0</span>
+            </div>
+            <p class="text-[10px] text-gray-500 mt-4 tracking-widest uppercase italic">FENG INDUSTRIES // Global Settlement Protocol</p>
         </header>
 
-        <form>
+        <form id="signupForm">
             <label>Business Name</label>
-            <input type="text" placeholder="e.g. UNCLE SCAR STUDIO" required>
+            <input type="text" id="bizName" placeholder="e.g. UNCLE SCAR STUDIO" required>
 
             <label>Operating Country</label>
-            <select required>
+            <select id="country" required>
                 <option value="">SELECT REGION...</option>
                 <option value="NG">NIGERIA</option>
                 <option value="US">UNITED STATES</option>
                 <option value="UK">UNITED KINGDOM</option>
-                <option value="GH">GHANA</option>
                 <option value="BR">BRAZIL</option>
             </select>
 
             <label>Settlement Currency</label>
-            <select required>
+            <select id="currency" required>
                 <option value="USD">USD - DOLLAR</option>
                 <option value="NGN">NGN - NAIRA</option>
                 <option value="GBP">GBP - POUND</option>
             </select>
 
             <div class="mt-8 mb-4 border-t border-[#222] pt-8">
-                <h3 class="text-xs font-bold uppercase mb-6 text-blue-500">// Settlement Destination</h3>
+                <h3 class="text-[10px] font-bold uppercase mb-6 text-blue-500 tracking-[0.3em]">// SETTLEMENT DESTINATION</h3>
                 
                 <label>Bank Name</label>
-                <input type="text" placeholder="YOUR LOCAL BANK" required>
+                <input type="text" id="bankName" placeholder="RECEIVING BANK" required>
 
                 <label>Account Number</label>
-                <input type="number" placeholder="0000000000" required>
+                <input type="text" id="accNum" placeholder="0000000000" required>
             </div>
 
-            <button type="submit" class="w-full bg-white text-black font-bold py-4 uppercase tracking-widest hover:bg-blue-600 hover:text-white transition-all">
+            <button type="submit" id="submitBtn" class="w-full bg-white text-black font-bold py-5 uppercase tracking-[0.2em] text-xs hover:bg-blue-600 hover:text-white transition-all shadow-[0_0_20px_rgba(0,102,255,0.2)]">
                 Initialize Account
             </button>
         </form>
 
-        <footer class="mt-12 text-center">
-            <p class="text-[9px] text-gray-600 uppercase">By initializing, you agree to the FENG Industries Global Protocol.</p>
-        </div>
+        <p id="statusMsg" class="mt-6 text-[10px] text-center uppercase tracking-widest hidden"></p>
     </div>
+
+    <script>
+        // 1. SETUP SUPABASE CONNECTION
+        const supabaseUrl = 'https://oapvrrseyabupzgxtfjx.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hcHZycnNleWFidXB6Z3h0Zmp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwODM5MDYsImV4cCI6MjA5MDY1OTkwNn0.SQpc418RXZgyJS5UL_yzR3lNuu5b19oNlMJaSultPsk';
+        
+        const { createClient } = supabase;
+        const _supabase = createClient(supabaseUrl, supabaseKey);
+
+        const signupForm = document.getElementById('signupForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const statusMsg = document.getElementById('statusMsg');
+
+        // 2. FORM LOGIC
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // UI Feedback
+            submitBtn.innerText = 'UPLOADING TO NETWORK...';
+            submitBtn.classList.add('btn-loading');
+            submitBtn.disabled = true;
+
+            // Gather Data
+            const payload = {
+                business_name: document.getElementById('bizName').value,
+                country: document.getElementById('country').value,
+                currency: document.getElementById('currency').value,
+                bank_name: document.getElementById('bankName').value,
+                account_number: document.getElementById('accNum').value
+            };
+
+            // Insert to Supabase
+            const { data, error } = await _supabase
+                .from('merchants')
+                .insert([payload]);
+
+            if (error) {
+                console.error(error);
+                statusMsg.innerText = 'PROTOCOL ERROR: ' + error.message;
+                statusMsg.classList.remove('hidden');
+                statusMsg.classList.add('text-red-500');
+                submitBtn.innerText = 'RETRY INITIALIZE';
+                submitBtn.disabled = false;
+            } else {
+                statusMsg.innerText = 'SUCCESS: MERCHANT RECOGNIZED';
+                statusMsg.classList.remove('hidden', 'text-red-500');
+                statusMsg.classList.add('text-green-500');
+                
+                // Wait 1.5 seconds then go to Dashboard
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+        });
+    </script>
 
 </body>
 </html>
