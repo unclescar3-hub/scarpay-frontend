@@ -9,20 +9,16 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap');
         body { font-family: 'Space Mono', monospace; background-color: #000; color: #fff; }
-        input, select { background-color: #111; border: 1px solid #333; color: white; padding: 12px; width: 100%; margin-bottom: 20px; outline: none; border-radius: 0px; transition: all 0.2s; }
+        input, select { background-color: #111; border: 1px solid #333; color: white; padding: 12px; width: 100%; margin-bottom: 20px; outline: none; border-radius: 0px; }
         input:focus { border-color: #0066FF; background-color: #050505; }
         label { font-size: 10px; text-transform: uppercase; color: #666; margin-bottom: 5px; display: block; letter-spacing: 2px; }
-        .btn-loading { opacity: 0.5; cursor: not-allowed; }
     </style>
 </head>
 <body class="p-8 pb-24 text-sm">
 
     <div class="max-w-md mx-auto">
         <header class="mb-12">
-            <div class="flex justify-between items-start">
-                <h1 class="text-3xl font-bold tracking-tighter uppercase leading-none">Register <br><span class="text-blue-600 font-black">Merchant</span></h1>
-                <span class="text-[9px] border border-blue-900 text-blue-900 px-2 py-1">v1.0.0</span>
-            </div>
+            <h1 class="text-3xl font-bold tracking-tighter uppercase leading-none">Register <br><span class="text-blue-600 font-black">Merchant</span></h1>
             <p class="text-[10px] text-gray-500 mt-4 tracking-widest uppercase italic">FENG INDUSTRIES // Global Settlement Protocol</p>
         </header>
 
@@ -36,7 +32,6 @@
                 <option value="NG">NIGERIA</option>
                 <option value="US">UNITED STATES</option>
                 <option value="UK">UNITED KINGDOM</option>
-                <option value="BR">BRAZIL</option>
             </select>
 
             <label>Settlement Currency</label>
@@ -48,15 +43,13 @@
 
             <div class="mt-8 mb-4 border-t border-[#222] pt-8">
                 <h3 class="text-[10px] font-bold uppercase mb-6 text-blue-500 tracking-[0.3em]">// SETTLEMENT DESTINATION</h3>
-                
                 <label>Bank Name</label>
                 <input type="text" id="bankName" placeholder="RECEIVING BANK" required>
-
                 <label>Account Number</label>
                 <input type="text" id="accNum" placeholder="0000000000" required>
             </div>
 
-            <button type="submit" id="submitBtn" class="w-full bg-white text-black font-bold py-5 uppercase tracking-[0.2em] text-xs hover:bg-blue-600 hover:text-white transition-all shadow-[0_0_20px_rgba(0,102,255,0.2)]">
+            <button type="submit" id="submitBtn" class="w-full bg-white text-black font-bold py-5 uppercase tracking-[0.2em] text-xs hover:bg-blue-600 hover:text-white transition-all">
                 Initialize Account
             </button>
         </form>
@@ -65,9 +58,9 @@
     </div>
 
     <script>
-        // 1. SETUP SUPABASE CONNECTION
-        const supabaseUrl = 'https://oapvrrseyabupzgxtfjx.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9hcHZycnNleWFidXB6Z3h0Zmp4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwODM5MDYsImV4cCI6MjA5MDY1OTkwNn0.SQpc418RXZgyJS5UL_yzR3lNuu5b19oNlMJaSultPsk';
+        // 1. UPDATED SUPABASE CONNECTION WITH NEW KEYS
+        const supabaseUrl = 'https://njmljnowgeovmmloqdyc.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5qbWxqbm93Z2Vvdm1tbG9xZHljIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyODE1NjUsImV4cCI6MjA5MTg1NzU2NX0.J3csf-Oa6i9_cKWVSM9U-uM1xmTRGlAnaIUr67PP-xM';
         
         const { createClient } = supabase;
         const _supabase = createClient(supabaseUrl, supabaseKey);
@@ -76,16 +69,11 @@
         const submitBtn = document.getElementById('submitBtn');
         const statusMsg = document.getElementById('statusMsg');
 
-        // 2. FORM LOGIC
         signupForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            // UI Feedback
-            submitBtn.innerText = 'UPLOADING TO NETWORK...';
-            submitBtn.classList.add('btn-loading');
+            submitBtn.innerText = 'CONNECTING TO FENG NETWORK...';
             submitBtn.disabled = true;
 
-            // Gather Data
             const payload = {
                 business_name: document.getElementById('bizName').value,
                 country: document.getElementById('country').value,
@@ -94,7 +82,6 @@
                 account_number: document.getElementById('accNum').value
             };
 
-            // Insert to Supabase
             const { data, error } = await _supabase
                 .from('merchants')
                 .insert([payload]);
@@ -107,17 +94,15 @@
                 submitBtn.innerText = 'RETRY INITIALIZE';
                 submitBtn.disabled = false;
             } else {
-                statusMsg.innerText = 'SUCCESS: MERCHANT RECOGNIZED';
+                statusMsg.innerText = 'SUCCESS: MERCHANT REGISTERED';
                 statusMsg.classList.remove('hidden', 'text-red-500');
                 statusMsg.classList.add('text-green-500');
                 
-                // Wait 1.5 seconds then go to Dashboard
                 setTimeout(() => {
                     window.location.href = 'index.html';
                 }, 1500);
             }
         });
     </script>
-
 </body>
 </html>
